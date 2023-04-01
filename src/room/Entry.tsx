@@ -1,13 +1,13 @@
 import type { ChangeEvent } from 'react'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import useWebSocket, { ReadyState } from 'react-use-websocket'
+import useWebSocket, { ReadyState, SendMessage } from 'react-use-websocket'
 
 import { BACKEND_URL } from '../config'
+import type { websocketProps } from './Room'
 
-export function Entry() {
-  const params = useParams()
-  const { sendMessage, lastMessage, readyState } = useWebSocket(`ws://${BACKEND_URL}/ws/room/${params.id}`)
+export function Entry(props: websocketProps) {
+  const { sendMessage, lastMessage, readyState } = props
   const navigate = useNavigate()
 
   const [name, setName] = useState<string>('')
@@ -51,7 +51,6 @@ export function Entry() {
 
   return (
     <div>
-      <img src={`${BACKEND_URL}/static/frog.jpg`} />
       <div>Websocket status: {connectionStatus}</div>
       <div>
         <b>Nickname</b>
