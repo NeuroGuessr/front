@@ -1,12 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import useWebSocket, { ReadyState } from 'react-use-websocket'
+import { useNavigate } from 'react-router-dom'
+import { ReadyState } from 'react-use-websocket'
 
 import { BACKEND_URL } from '../config'
 import type { websocketProps } from './Room'
 
 export function Game(props: websocketProps) {
   const { sendMessage, lastMessage, readyState } = props
+  const navigate = useNavigate()
 
   const [isGameLoaded, setIsGameLoaded] = useState<boolean>(false)
   const [images, setImages] = useState<string[]>([])
@@ -27,6 +28,7 @@ export function Game(props: websocketProps) {
         setLabels(json.labels)
       } else if (json.type == 'results') {
         console.log(json)
+        navigate('../results')
       }
     }
   }, [lastMessage])

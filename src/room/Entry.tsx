@@ -1,9 +1,8 @@
 import type { ChangeEvent } from 'react'
 import React, { useCallback, useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import useWebSocket, { ReadyState, SendMessage } from 'react-use-websocket'
+import { useNavigate } from 'react-router-dom'
+import { ReadyState } from 'react-use-websocket'
 
-import { BACKEND_URL } from '../config'
 import type { websocketProps } from './Room'
 
 export function Entry(props: websocketProps) {
