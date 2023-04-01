@@ -1,67 +1,16 @@
-import type { ChangeEvent } from 'react'
-import React, { useCallback, useEffect, useState } from 'react'
-import useWebSocket, { ReadyState } from 'react-use-websocket'
+// App.js
+import { Route, Routes } from 'react-router-dom'
 
-export function Room() {
-  const [socketUrl, setSocketUrl] = useState('ws://127.0.0.1:8000/ws/room/1')
+import { Entry } from './Entry'
+import { Game } from './Game'
 
-  const { sendMessage, lastMessage, readyState } = useWebSocket(socketUrl)
-
-  const [name, setName] = useState<string>('')
-  const [players, setPlayers] = useState<string[]>([])
-
-  // receiving messages
-  useEffect(() => {
-    if (lastMessage !== null && typeof lastMessage == 'string') {
-      const json = JSON.parse(lastMessage)
-      if (json.type == 'current_players') {
-        setPlayers(json.players)
-      }
-    }
-    console.log(lastMessage)
-  }, [lastMessage])
-
-  const sendCreateUser = useCallback(() => {
-    const message = JSON.stringify({ type: 'create_player', name: name })
-    sendMessage(message)
-  }, [name, sendMessage])
-
-  const onChangeName = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      setName(event.target.value)
-    },
-    [setName],
-  )
-
-  const onStartGame = () => {
-    const message = JSON.stringify({ type: 'start_game' })
-    sendMessage(message)
-  }
-
-  const connectionStatus = {
-    [ReadyState.CONNECTING]: 'Connecting',
-    [ReadyState.OPEN]: 'Open',
-    [ReadyState.CLOSING]: 'Closing',
-    [ReadyState.CLOSED]: 'Closed',
-    [ReadyState.UNINSTANTIATED]: 'Uninstantiated',
-  }[readyState]
-
+export const Room = () => {
   return (
-    <div>
-      <div>Websocket status: {connectionStatus}</div>
-      <div>
-        <b>Nickname</b>
-        <br />
-        <input type='text' onChange={onChangeName}></input>
-        <button onClick={sendCreateUser}>Join!</button>
-      </div>
-      <div>
-        <b>All users</b>
-        {players.map((player, idx) => (
-          <p key={idx}>{player}</p>
-        ))}
-      </div>
-      <button onClick={onStartGame}>Start game!</button>
-    </div>
+    <>
+      <Routes>
+        <Route path='/:id' element={<Entry />} />
+        <Route path='/:id/game' element={<Game />} />
+      </Routes>
+    </>
   )
 }
