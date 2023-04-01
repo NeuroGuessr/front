@@ -1,16 +1,17 @@
 import type { ChangeEvent } from 'react'
 import React, { useCallback, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
 
+import { BACKEND_URL } from '../config'
+
 export function Entry() {
-  const { sendMessage, lastMessage, readyState } = useWebSocket('ws://127.0.0.1:8000/ws/room/1')
+  const params = useParams()
+  const { sendMessage, lastMessage, readyState } = useWebSocket(`ws://${BACKEND_URL}/ws/room/${params.id}`)
+  const navigate = useNavigate()
+
   const [name, setName] = useState<string>('')
   const [players, setPlayers] = useState<string[]>([])
-
-  const params = useParams()
-
-  console.log(params)
 
   // receiving messages
   useEffect(() => {
@@ -20,7 +21,6 @@ export function Entry() {
         setPlayers(json.players)
       }
     }
-    console.log(lastMessage)
   }, [lastMessage])
 
   const sendCreateUser = useCallback(() => {
@@ -38,6 +38,7 @@ export function Entry() {
   const onStartGame = () => {
     const message = JSON.stringify({ type: 'start_game' })
     sendMessage(message)
+    navigate('game')
   }
 
   const connectionStatus = {
@@ -50,6 +51,7 @@ export function Entry() {
 
   return (
     <div>
+      <img src={`${BACKEND_URL}/static/frog.jpg`} />
       <div>Websocket status: {connectionStatus}</div>
       <div>
         <b>Nickname</b>
