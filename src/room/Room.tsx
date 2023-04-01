@@ -10,7 +10,7 @@ export function Room() {
   const [name, setName] = useState<string>('')
   const [players, setPlayers] = useState<string[]>([])
 
-  // getting all users
+  // receiving messages
   useEffect(() => {
     if (lastMessage !== null && typeof lastMessage == 'string') {
       const json = JSON.parse(lastMessage)
@@ -23,8 +23,7 @@ export function Room() {
 
   const sendCreateUser = useCallback(() => {
     const message = JSON.stringify({ type: 'create_player', name: name })
-    console.log(message)
-    sendMessage(JSON.stringify(message))
+    sendMessage(message)
   }, [name, sendMessage])
 
   const onChangeName = useCallback(
@@ -33,6 +32,11 @@ export function Room() {
     },
     [setName],
   )
+
+  const onStartGame = () => {
+    const message = JSON.stringify({ type: 'start_game' })
+    sendMessage(message)
+  }
 
   const connectionStatus = {
     [ReadyState.CONNECTING]: 'Connecting',
@@ -57,6 +61,7 @@ export function Room() {
           <p key={idx}>{player}</p>
         ))}
       </div>
+      <button onClick={onStartGame}>Start game!</button>
     </div>
   )
 }
