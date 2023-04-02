@@ -1,16 +1,22 @@
 import type { ChangeEvent } from 'react'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ReadyState } from 'react-use-websocket'
 
-import type { websocketProps } from './Room'
+import { RoomContext } from './RoomContext'
 
-export function Entry(props: websocketProps) {
-  const { sendMessage, lastMessage, readyState } = props
+export function Entry() {
+  const { websocket, roomState, setRoomState, players, setPlayers, setYourName, yourName } = useContext(RoomContext)
+  const { sendMessage, lastMessage, readyState } = websocket
+
   const navigate = useNavigate()
 
-  const [name, setName] = useState<string>('')
-  const [players, setPlayers] = useState<string[]>([])
+  // navigate
+  useEffect(() => {
+    if (roomState == 'game') {
+      navigate('game')
+    }
+  }, [roomState])
 
   // receiving messages
   useEffect(() => {
@@ -22,23 +28,24 @@ export function Entry(props: websocketProps) {
     }
   }, [lastMessage])
 
+  //
   const sendCreateUser = useCallback(() => {
-    const message = JSON.stringify({ type: 'create_player', name: name })
+    const message = JSON.stringify({ type: 'create_player', name: yourName })
     sendMessage(message)
-  }, [name, sendMessage])
+  }, [yourName, sendMessage])
 
   const onChangeName = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
-      setName(event.target.value)
+      setYourName(event.target.value)
     },
-    [setName],
+    [setYourName],
   )
 
-  const onStartGame = () => {
+  const onStartGame = useCallback(() => {
     const message = JSON.stringify({ type: 'start_game' })
     sendMessage(message)
-    navigate('game')
-  }
+    setRoomState('game')
+  }, [])
 
   const connectionStatus = {
     [ReadyState.CONNECTING]: 'Connecting',
@@ -59,9 +66,6 @@ export function Entry(props: websocketProps) {
       </div>
       <div>
         <b>All users</b>
-        {players.map((player, idx) => (
-          <p key={idx}>{player}</p>
-        ))}
       </div>
       <button onClick={onStartGame}>Start game!</button>
     </div>

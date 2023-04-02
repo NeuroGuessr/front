@@ -1,11 +1,12 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { ReadyState } from 'react-use-websocket'
 
 import { BACKEND_URL } from '../config'
-import type { websocketProps } from './Room'
+import { RoomContext } from './RoomContext'
 
-export function Game(props: websocketProps) {
-  const { sendMessage, lastMessage, readyState } = props
+export function Game() {
+  const { websocket } = useContext(RoomContext)
+  const { sendMessage, lastMessage, readyState } = websocket
 
   const [isGameLoaded, setIsGameLoaded] = useState<boolean>(false)
   const [images, setImages] = useState<string[]>([])
