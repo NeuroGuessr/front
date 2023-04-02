@@ -1,3 +1,5 @@
+import './game.css'
+
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { SendMessage } from 'react-use-websocket'
@@ -34,7 +36,7 @@ export function Game({
   useEffect(() => {
     console.log(roomState.screen)
     if (roomState.screen == 'lobby') {
-      navigate(-1)
+      //   navigate(-1)
     }
   }, [navigate, roomState])
 
@@ -60,10 +62,10 @@ export function Game({
         setRoomState({ ...roomState, screen: 'lobby' })
       }
     }
-  }, [lastMessage, setPlayers])
+  }, [lastMessage, roomState, setPlayers, setRoomState])
 
   useEffect(() => {
-    if (Object.keys(matches).length == 4) {
+    if (Object.keys(matches).length == images.length) {
       const message = JSON.stringify({
         type: 'choice',
         choices: matches,
@@ -78,7 +80,7 @@ export function Game({
         choices: matches,
       })}`,
     )
-  }, [levelNumber, matches, sendMessage])
+  }, [images.length, levelNumber, matches, sendMessage])
 
   const chooseImage = useCallback(
     (image: string) => {
@@ -114,36 +116,36 @@ export function Game({
     return <div>Loading game!</div>
   } else {
     return (
-      <div style={{ display: 'flex' }}>
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <div style={{ display: 'flex' }}>
+      <div id='main'>
+        <div id='timer'>some time</div>
+        <div id='content'>
+          <div id='imagesGrid'>
             {images.map((imageUrl, idx) => (
               <div
                 key={idx}
                 onClick={() => chooseImage(imageUrl)}
+                className='image'
                 style={{
                   border: '3px solid',
                   borderColor: imageChosen === imageUrl ? 'red' : 'white',
-                  margin: 5,
                   opacity: Object.keys(matches).includes(imageUrl) ? 0.3 : 1,
                 }}
               >
-                <img src={`http://${AI_URL}/static/${imageUrl}`} width={200} height={200} />
+                <img src={`http://${BACKEND_URL}/static/${imageUrl}`} width={200} height={200} />
               </div>
             ))}
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div id='labelsGrid'>
             {labels.map((label, idx) => (
               <div
                 key={idx}
                 onClick={() => chooseLabel(label)}
+                className='label'
                 style={{
-                  padding: 5,
-                  backgroundColor: '#ddd',
-                  margin: 2,
                   border: '2px solid',
                   borderColor: labelChosen === label ? 'red' : '#ddd',
-                  color: Object.values(matches).includes(label) ? '#aaa' : 'black',
+                  backgroundColor: Object.values(matches).includes(label) ? '#aaa' : '#7F45B1',
+                  color: Object.values(matches).includes(label) ? '#ccc' : '#000',
                 }}
               >
                 {label}
@@ -153,6 +155,46 @@ export function Game({
         </div>
         <PlayerTable />
       </div>
+
+      //   <div style={{ display: 'flex' }}>
+      //     <div style={{ display: 'flex', flexDirection: 'column' }}>
+      //       <div style={{ display: 'flex' }}>
+      //         {images.map((imageUrl, idx) => (
+      //           <div
+      //             key={idx}
+      //             onClick={() => chooseImage(imageUrl)}
+      //             style={{
+      //               border: '3px solid',
+      //               borderColor: imageChosen === imageUrl ? 'red' : 'white',
+      //               margin: 5,
+      //               opacity: Object.keys(matches).includes(imageUrl) ? 0.3 : 1,
+      //             }}
+      //           >
+      //             <img src={`http://${BACKEND_URL}/static/${imageUrl}`} width={200} height={200} />
+      //           </div>
+      //         ))}
+      //       </div>
+      //       <div style={{ display: 'flex', flexDirection: 'column' }}>
+      //         {labels.map((label, idx) => (
+      //           <div
+      //             key={idx}
+      //             onClick={() => chooseLabel(label)}
+      //             style={{
+      //               padding: 5,
+      //               backgroundColor: '#ddd',
+      //               margin: 2,
+      //               border: '2px solid',
+      //               borderColor: labelChosen === label ? 'red' : '#ddd',
+      //               color: Object.values(matches).includes(label) ? '#aaa' : 'black',
+      //             }}
+      //           >
+      //             {label}
+      //           </div>
+      //         ))}
+      //       </div>
+      //     </div>
+      //     <PlayerTable />
+      //   </div>
     )
   }
 }
