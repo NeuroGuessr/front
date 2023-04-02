@@ -3,14 +3,17 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import { Home } from './Home'
 import { Room } from './room/Room'
+import { RoomContextProvider } from './room/RoomContext'
 
 export function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/room/:id/*' element={<Room />} />
-      </Routes>
-    </BrowserRouter>
+    <RoomContextProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='/room/:id/*' element={<Room />} />
+        </Routes>
+      </BrowserRouter>
+    </RoomContextProvider>
   )
 }

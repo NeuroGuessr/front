@@ -1,16 +1,7 @@
 import { createContext, useState } from 'react'
-import { Route, Routes, useParams } from 'react-router-dom'
 import type { SendMessage } from 'react-use-websocket'
-import useWebSocket, { ReadyState } from 'react-use-websocket'
+import { ReadyState } from 'react-use-websocket'
 
-import { BACKEND_URL } from '../config'
-
-export interface Websocket {
-  sendMessage: SendMessage
-  // eslint-disable-next-line
-  lastMessage: MessageEvent<any> | null
-  readyState: ReadyState
-}
 export interface Player {
   name: string
   total_score: number
@@ -24,7 +15,8 @@ export interface RoomState {
 }
 
 interface RoomContextType {
-  websocket: Websocket
+  websocketUrl: string | null
+  setWebsocketUrl: (websocketUrl: string) => void
   roomState: RoomState
   setRoomState: (newRoomState: RoomState) => void
   roomId: number | null
@@ -36,7 +28,8 @@ interface RoomContextType {
 }
 
 export const RoomContext = createContext<RoomContextType>({
-  websocket: { sendMessage: () => {}, lastMessage: null, readyState: ReadyState.UNINSTANTIATED },
+  websocketUrl: null,
+  setWebsocketUrl: () => {},
   roomState: { id: -1, screen: 'lobby' },
   setRoomState: () => {},
   roomId: null,
@@ -52,14 +45,15 @@ export const RoomContextProvider = ({ children }: { children: JSX.Element[] | JS
   const [roomId, setRoomId] = useState<number | null>(null)
   const [players, setPlayers] = useState<Player[]>([])
   const [yourName, setYourName] = useState<string | null>(null)
+  const [websocketUrl, setWebsocketUrl] = useState<string | null>(null)
 
-  const params = useParams()
-  const { sendMessage, lastMessage, readyState } = useWebSocket(`ws://${BACKEND_URL}/ws/room/${params.id}`)
+  console.log(websocketUrl)
 
   return (
     <RoomContext.Provider
       value={{
-        websocket: { sendMessage, lastMessage, readyState },
+        websocketUrl,
+        setWebsocketUrl,
         roomState,
         setRoomState,
         roomId,

@@ -1,12 +1,12 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
-import { ReadyState } from 'react-use-websocket'
+import useWebSocket, { ReadyState } from 'react-use-websocket'
 
 import { BACKEND_URL } from '../config'
 import { RoomContext } from './RoomContext'
 
 export function Game() {
-  const { websocket } = useContext(RoomContext)
-  const { sendMessage, lastMessage, readyState } = websocket
+  const { websocketUrl } = useContext(RoomContext)
+  const { sendMessage, lastMessage, readyState } = useWebSocket(websocketUrl)
 
   const [isGameLoaded, setIsGameLoaded] = useState<boolean>(false)
   const [levelNumber, setLevelNumber] = useState<number>(-1)

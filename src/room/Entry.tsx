@@ -1,14 +1,13 @@
-import type { ChangeEvent } from 'react'
 import React, { useCallback, useContext, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ReadyState } from 'react-use-websocket'
+import useWebSocket, { ReadyState } from 'react-use-websocket'
 
 import { PlayerTable } from './PlayerTable'
 import { RoomContext } from './RoomContext'
 
 export function Entry() {
-  const { websocket, roomState, setRoomState, setPlayers, setYourName, yourName } = useContext(RoomContext)
-  const { sendMessage, lastMessage, readyState } = websocket
+  const { websocketUrl, roomState, setRoomState, setPlayers } = useContext(RoomContext)
+  const { sendMessage, lastMessage, readyState } = useWebSocket(websocketUrl)
 
   const navigate = useNavigate()
 
@@ -17,30 +16,17 @@ export function Entry() {
     if (roomState.screen == 'game') {
       navigate('game')
     }
-  }, [roomState])
+  }, [navigate, roomState])
 
   // receiving messages
   useEffect(() => {
     if (lastMessage !== null && typeof lastMessage.data == 'string') {
       const json = JSON.parse(lastMessage.data)
-      console.log(json)
       if (json.type == 'room') {
         setPlayers(json.players)
       }
     }
-  }, [lastMessage])
-
-  const sendCreateUser = useCallback(() => {
-    const message = JSON.stringify({ type: 'create_player', name: yourName })
-    sendMessage(message)
-  }, [yourName, sendMessage])
-
-  const onChangeName = useCallback(
-    (event: ChangeEvent<HTMLInputElement>) => {
-      setYourName(event.target.value)
-    },
-    [setYourName],
-  )
+  }, [lastMessage, setPlayers])
 
   const onStartGame = useCallback(() => {
     const message = JSON.stringify({ type: 'start_game' })
@@ -60,12 +46,7 @@ export function Entry() {
     <div style={{ display: 'flex' }}>
       <div style={{ display: 'flex:', flexDirection: 'column' }}>
         <div>Websocket status: {connectionStatus}</div>
-        <div>
-          <b>Nickname</b>
-          <br />
-          <input type='text' onChange={onChangeName}></input>
-          <button onClick={sendCreateUser}>Join!</button>
-        </div>
+
         <button onClick={onStartGame}>Start game!</button>
       </div>
       <PlayerTable />
