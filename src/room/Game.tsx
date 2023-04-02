@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import type { SendMessage } from 'react-use-websocket'
 import { ReadyState } from 'react-use-websocket'
 
-import { BACKEND_URL } from '../config'
+import { AI_URL, BACKEND_URL } from '../config'
 import { RoomContext } from '../RoomContext'
 import { PlayerTable } from './PlayerTable'
 
@@ -128,7 +128,7 @@ export function Game({
                   opacity: Object.keys(matches).includes(imageUrl) ? 0.3 : 1,
                 }}
               >
-                <img src={`http://${BACKEND_URL}/static/${imageUrl}`} width={200} height={200} />
+                <img src={`http://${AI_URL}/static/${imageUrl}`} width={200} height={200} />
               </div>
             ))}
           </div>
