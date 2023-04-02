@@ -22,6 +22,7 @@ export function Entry() {
   useEffect(() => {
     if (lastMessage !== null && typeof lastMessage.data == 'string') {
       const json = JSON.parse(lastMessage.data)
+      console.log(json)
       if (json.type == 'room') {
         setPlayers(json.players)
       }

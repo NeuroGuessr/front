@@ -22,6 +22,7 @@ export function Game() {
   useEffect(() => {
     if (lastMessage !== null && typeof lastMessage.data == 'string') {
       const json = JSON.parse(lastMessage.data)
+      console.log(json)
       if (json.type == 'level') {
         // set new level data
         setIsGameLoaded(true)

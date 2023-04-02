@@ -47,8 +47,6 @@ export const RoomContextProvider = ({ children }: { children: JSX.Element[] | JS
   const [yourName, setYourName] = useState<string | null>(null)
   const [websocketUrl, setWebsocketUrl] = useState<string | null>(null)
 
-  console.log(websocketUrl)
-
   return (
     <RoomContext.Provider
       value={{

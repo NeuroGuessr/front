@@ -8,16 +8,14 @@ import { RoomContext } from './room/RoomContext'
 export function Home() {
   const { setYourName, setWebsocketUrl, websocketUrl } = useContext(RoomContext)
 
-  console.log(websocketUrl)
   const { sendMessage, lastMessage, readyState } = useWebSocket(websocketUrl)
   const navigate = useNavigate()
 
   const [nickname, setNickname] = useState<string>('przemek')
-  const [roomId, setRoomId] = useState<number>(0)
+  const [roomId, setRoomId] = useState<number>(1)
   const [error, setError] = useState<string>('')
 
   useEffect(() => {
-    console.log(readyState, lastMessage)
     if (readyState == ReadyState.OPEN) {
       const message = JSON.stringify({ type: 'create_player', name: nickname })
       sendMessage(message)
@@ -25,6 +23,7 @@ export function Home() {
     }
     if (readyState == ReadyState.OPEN && lastMessage !== null) {
       const json = JSON.parse(lastMessage.data)
+      console.log(json)
       if (json.type == 'error') {
         setError(json.message)
       } else if (json.type == 'room') {
