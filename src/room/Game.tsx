@@ -35,7 +35,7 @@ export function Game({
   // navigate
   useEffect(() => {
     if (roomState.screen == 'lobby') {
-      navigate(-1)
+      navigate('..')
     }
   }, [navigate, roomState])
 
