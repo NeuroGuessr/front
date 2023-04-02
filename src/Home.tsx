@@ -1,49 +1,39 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import useWebSocket, { ReadyState } from 'react-use-websocket'
 
 import { BACKEND_URL } from './config'
-import { RoomContext } from './room/RoomContext'
+import { RoomContext } from './RoomContext'
 
 export function Home() {
-  const { setYourName, setWebsocketUrl, websocketUrl } = useContext(RoomContext)
+  const { setYourName } = useContext(RoomContext)
 
-  console.log(websocketUrl)
-  const { sendMessage, lastMessage, readyState } = useWebSocket(websocketUrl)
   const navigate = useNavigate()
 
   const [nickname, setNickname] = useState<string>('przemek')
-  const [roomId, setRoomId] = useState<number>(0)
-  const [error, setError] = useState<string>('')
-
-  useEffect(() => {
-    console.log(readyState, lastMessage)
-    if (readyState == ReadyState.OPEN) {
-      const message = JSON.stringify({ type: 'create_player', name: nickname })
-      sendMessage(message)
-      setYourName(nickname)
-    }
-    if (readyState == ReadyState.OPEN && lastMessage !== null) {
-      const json = JSON.parse(lastMessage.data)
-      if (json.type == 'error') {
-        setError(json.message)
-      } else if (json.type == 'room') {
-        navigate(`room/${json.room_id}`)
-      }
-    }
-  }, [lastMessage, navigate, nickname, readyState, sendMessage, setYourName, websocketUrl])
+  const [roomId, setRoomId] = useState<number>(1)
 
   const createRoom = useCallback(() => {
-    setWebsocketUrl(`ws://${BACKEND_URL}/ws/room/new/player/${nickname}`)
-  }, [nickname, setWebsocketUrl])
+    fetch(`http://${BACKEND_URL}/room`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({}),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setYourName(nickname)
+        navigate(`room/${data.room_id}/player/${nickname}`)
+      })
+  }, [navigate, nickname, setYourName])
 
   const joinRoom = useCallback(() => {
-    setWebsocketUrl(`ws://${BACKEND_URL}/ws/room/${roomId}/player/${nickname}`)
-  }, [nickname, roomId, setWebsocketUrl])
+    navigate(`room/${roomId}/player/${nickname}`)
+  }, [navigate, nickname, roomId])
 
   return (
     <div>
-      <b style={{ color: 'red' }}>{error}</b>
       <b>Enter you nickname</b>
       <br />
       <input type='text' onChange={(event) => setNickname(event.target.value)} value={nickname}></input>

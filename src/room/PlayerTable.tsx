@@ -1,8 +1,7 @@
-// App.js
 import { useContext } from 'react'
 
-import type { Player } from './RoomContext'
-import { RoomContext } from './RoomContext'
+import type { Player } from '../RoomContext'
+import { RoomContext } from '../RoomContext'
 
 export const PlayerTable = () => {
   const { players } = useContext(RoomContext)
@@ -14,8 +13,6 @@ export const PlayerTable = () => {
       </div>
     )
   }
-
-  console.log(players)
 
   if (players.length == 0) {
     return <div>No players currently!</div>

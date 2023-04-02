@@ -1,12 +1,24 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
-import useWebSocket, { ReadyState } from 'react-use-websocket'
+import { useNavigate } from 'react-router-dom'
+import type { SendMessage } from 'react-use-websocket'
+import { ReadyState } from 'react-use-websocket'
 
-import { BACKEND_URL } from '../config'
-import { RoomContext } from './RoomContext'
+import { AI_URL, BACKEND_URL } from '../config'
+import { RoomContext } from '../RoomContext'
+import { PlayerTable } from './PlayerTable'
 
-export function Game() {
-  const { websocketUrl } = useContext(RoomContext)
-  const { sendMessage, lastMessage, readyState } = useWebSocket(websocketUrl)
+export function Game({
+  sendMessage,
+  lastMessage,
+  readyState,
+}: {
+  sendMessage: SendMessage
+  // eslint-disable-next-line
+  lastMessage: MessageEvent<any> | null
+  readyState: ReadyState
+}) {
+  const { setPlayers, setRoomState, roomState } = useContext(RoomContext)
+  const navigate = useNavigate()
 
   const [isGameLoaded, setIsGameLoaded] = useState<boolean>(false)
   const [levelNumber, setLevelNumber] = useState<number>(-1)
@@ -14,9 +26,17 @@ export function Game() {
   const [labels, setLabels] = useState<string[]>([])
 
   // game logic
-  const [imageChosen, setImageChosen] = useState<number | null>(null)
-  const [labelChosen, setLabelChosen] = useState<number | null>(null)
+  const [imageChosen, setImageChosen] = useState<string | null>(null)
+  const [labelChosen, setLabelChosen] = useState<string | null>(null)
   const [matches, setMatches] = useState({})
+
+  // navigate
+  useEffect(() => {
+    console.log(roomState.screen)
+    if (roomState.screen == 'lobby') {
+      navigate(-1)
+    }
+  }, [navigate, roomState])
 
   // receiving messages
   useEffect(() => {
@@ -33,12 +53,17 @@ export function Game() {
         setLabelChosen(null)
         setMatches([])
       }
+      if (json.type == 'room') {
+        setPlayers(json.players)
+      }
+      if (json.type == 'game_finished') {
+        setRoomState({ ...roomState, screen: 'lobby' })
+      }
     }
-  }, [lastMessage])
+  }, [lastMessage, setPlayers])
 
   useEffect(() => {
     if (Object.keys(matches).length == 4) {
-      console.log('succes!')
       const message = JSON.stringify({
         type: 'choice',
         choices: matches,
@@ -53,33 +78,33 @@ export function Game() {
         choices: matches,
       })}`,
     )
-  }, [matches])
+  }, [levelNumber, matches, sendMessage])
 
   const chooseImage = useCallback(
-    (imageIdx: number) => {
+    (image: string) => {
       if (labelChosen !== null) {
         setImageChosen(null)
         setLabelChosen(null)
         setMatches((prevMatches) => {
-          return { ...prevMatches, [imageIdx]: labelChosen }
+          return { ...prevMatches, [image]: labelChosen }
         })
       } else {
-        setImageChosen(imageIdx)
+        setImageChosen(image)
       }
     },
     [labelChosen],
   )
 
   const chooseLabel = useCallback(
-    (labelIdx: number) => {
+    (label: string) => {
       if (imageChosen !== null) {
         setImageChosen(null)
         setLabelChosen(null)
         setMatches((prevMatches) => {
-          return { ...prevMatches, [imageChosen]: labelIdx }
+          return { ...prevMatches, [imageChosen]: label }
         })
       } else {
-        setLabelChosen(labelIdx)
+        setLabelChosen(label)
       }
     },
     [imageChosen],
@@ -89,41 +114,44 @@ export function Game() {
     return <div>Loading game!</div>
   } else {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <div style={{ display: 'flex' }}>
-          {images.map((imageUrl, idx) => (
-            <div
-              key={idx}
-              onClick={() => chooseImage(idx)}
-              style={{
-                border: '3px solid',
-                borderColor: imageChosen === idx ? 'red' : 'white',
-                margin: 5,
-                opacity: Object.keys(matches).includes(idx.toString()) ? 0.3 : 1,
-              }}
-            >
-              <img src={`http://${BACKEND_URL}/static/${imageUrl}`} width={200} height={200} />
-            </div>
-          ))}
-        </div>
+      <div style={{ display: 'flex' }}>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          {labels.map((label, idx) => (
-            <div
-              key={idx}
-              onClick={() => chooseLabel(idx)}
-              style={{
-                padding: 5,
-                backgroundColor: '#ddd',
-                margin: 2,
-                border: '2px solid',
-                borderColor: labelChosen === idx ? 'red' : '#ddd',
-                color: Object.values(matches).includes(idx) ? '#aaa' : 'black',
-              }}
-            >
-              {label}
-            </div>
-          ))}
+          <div style={{ display: 'flex' }}>
+            {images.map((imageUrl, idx) => (
+              <div
+                key={idx}
+                onClick={() => chooseImage(imageUrl)}
+                style={{
+                  border: '3px solid',
+                  borderColor: imageChosen === imageUrl ? 'red' : 'white',
+                  margin: 5,
+                  opacity: Object.keys(matches).includes(imageUrl) ? 0.3 : 1,
+                }}
+              >
+                <img src={`http://${AI_URL}/static/${imageUrl}`} width={200} height={200} />
+              </div>
+            ))}
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            {labels.map((label, idx) => (
+              <div
+                key={idx}
+                onClick={() => chooseLabel(label)}
+                style={{
+                  padding: 5,
+                  backgroundColor: '#ddd',
+                  margin: 2,
+                  border: '2px solid',
+                  borderColor: labelChosen === label ? 'red' : '#ddd',
+                  color: Object.values(matches).includes(label) ? '#aaa' : 'black',
+                }}
+              >
+                {label}
+              </div>
+            ))}
+          </div>
         </div>
+        <PlayerTable />
       </div>
     )
   }

@@ -1,18 +1,28 @@
 import React, { useCallback, useContext, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import useWebSocket, { ReadyState } from 'react-use-websocket'
+import type { SendMessage } from 'react-use-websocket'
+import { ReadyState } from 'react-use-websocket'
 
+import { RoomContext } from '../RoomContext'
 import { PlayerTable } from './PlayerTable'
-import { RoomContext } from './RoomContext'
 
-export function Entry() {
-  const { websocketUrl, roomState, setRoomState, setPlayers } = useContext(RoomContext)
-  const { sendMessage, lastMessage, readyState } = useWebSocket(websocketUrl)
+export function Entry({
+  sendMessage,
+  lastMessage,
+  readyState,
+}: {
+  sendMessage: SendMessage
+  // eslint-disable-next-line
+  lastMessage: MessageEvent<any> | null
+  readyState: ReadyState
+}) {
+  const { roomState, setRoomState, setPlayers } = useContext(RoomContext)
 
   const navigate = useNavigate()
 
   // navigate
   useEffect(() => {
+    console.log(roomState.screen)
     if (roomState.screen == 'game') {
       navigate('game')
     }
@@ -22,17 +32,21 @@ export function Entry() {
   useEffect(() => {
     if (lastMessage !== null && typeof lastMessage.data == 'string') {
       const json = JSON.parse(lastMessage.data)
+      console.log(json)
       if (json.type == 'room') {
         setPlayers(json.players)
       }
+      if (json.type == 'level') {
+        setRoomState({ ...roomState, screen: 'game' })
+      }
     }
-  }, [lastMessage, setPlayers])
+  }, [lastMessage, roomState, setPlayers, setRoomState])
 
   const onStartGame = useCallback(() => {
     const message = JSON.stringify({ type: 'start_game' })
     sendMessage(message)
     setRoomState({ ...roomState, screen: 'game' })
-  }, [])
+  }, [roomState, sendMessage, setRoomState])
 
   const connectionStatus = {
     [ReadyState.CONNECTING]: 'Connecting',
