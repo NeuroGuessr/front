@@ -1,4 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import type { SendMessage } from 'react-use-websocket'
 import { ReadyState } from 'react-use-websocket'
 
@@ -16,7 +17,9 @@ export function Game({
   lastMessage: MessageEvent<any> | null
   readyState: ReadyState
 }) {
-  const { setPlayers } = useContext(RoomContext)
+  const { setPlayers, setRoomState, roomState } = useContext(RoomContext)
+  const navigate = useNavigate()
+
   const [isGameLoaded, setIsGameLoaded] = useState<boolean>(false)
   const [levelNumber, setLevelNumber] = useState<number>(-1)
   const [images, setImages] = useState<string[]>([])
@@ -26,6 +29,14 @@ export function Game({
   const [imageChosen, setImageChosen] = useState<string | null>(null)
   const [labelChosen, setLabelChosen] = useState<string | null>(null)
   const [matches, setMatches] = useState({})
+
+  // navigate
+  useEffect(() => {
+    console.log(roomState.screen)
+    if (roomState.screen == 'lobby') {
+      navigate(-1)
+    }
+  }, [navigate, roomState])
 
   // receiving messages
   useEffect(() => {
@@ -44,6 +55,9 @@ export function Game({
       }
       if (json.type == 'room') {
         setPlayers(json.players)
+      }
+      if (json.type == 'game_finished') {
+        setRoomState({ ...roomState, screen: 'lobby' })
       }
     }
   }, [lastMessage, setPlayers])
