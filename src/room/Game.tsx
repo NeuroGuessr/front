@@ -63,7 +63,7 @@ export function Game({
   }, [lastMessage, setPlayers])
 
   useEffect(() => {
-    if (Object.keys(matches).length == 4) {
+    if (Object.keys(matches).length == images.length) {
       const message = JSON.stringify({
         type: 'choice',
         choices: matches,
