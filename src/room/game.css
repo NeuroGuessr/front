@@ -1,3 +1,18 @@
+body {
+    margin: 0
+}
+
+#main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0px 174px;
+    gap: 21px;
+    background: radial-gradient(73.62% 73.62% at 23.84% 26.38%, rgba(67, 35, 35, 0.2) 0%, rgba(0, 0, 0, 0) 100%) /* warning: gradient uses a rotation that is not supported by CSS and may not behave as expected */, #E9D0FF;
+    flex: 1;
+    flex-grow: 1;
+    height: 100vh;
+}
 #timer {
     background: #FDEDED;
     border-width: 0px 1px 3px 1px;
@@ -19,4 +34,47 @@
     text-align: center;
     color: #371757;
     text-shadow: 0px 4px 4px rgba(186, 107, 255, 0.54);
+}
+#content{
+    margin-top: 76px;
+    padding: 10px;
+    width: 1234px;
+    height: 75%;
+    background: rgba(255, 255, 255, 0.39);
+    box-shadow: 0px 4px 14px -6px #371757;
+    border-radius: 11px;
+    display: flex;
+    flex-direction: column;
+    max-width: 80%;
+    align-content: center;
+    align-items: center;
+    justify-content: space-around;
+    flex-grow: 1;
+}
+#imagesGrid {
+    display: flex;
+}
+#labelsGrid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.image {
+    width: 200px;
+    margin: 10px;
+    height: 200px;
+}
+.label {
+    margin: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 10px;
+    gap: 10px;
+    isolation: isolate;
+    width: 285px;
+    height: 127px;
+    background: #7F45B1;
+    backdrop-filter: blur(2.5px);
+    border-radius: 21px;
 }
