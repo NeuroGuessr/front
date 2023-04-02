@@ -1,13 +1,17 @@
 import React, { useCallback, useContext, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
 
+import { BACKEND_URL } from '../config'
 import { PlayerTable } from './PlayerTable'
 import { RoomContext } from './RoomContext'
 
 export function Entry() {
-  const { websocketUrl, roomState, setRoomState, setPlayers } = useContext(RoomContext)
-  const { sendMessage, lastMessage, readyState } = useWebSocket(websocketUrl)
+  const { roomState, setRoomState, setPlayers } = useContext(RoomContext)
+  const params = useParams()
+  const { sendMessage, lastMessage, readyState } = useWebSocket(
+    `ws://${BACKEND_URL}/ws/room/${params.room_id}/player/${params.name}`,
+  )
 
   const navigate = useNavigate()
 

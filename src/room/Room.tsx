@@ -7,8 +7,8 @@ import { Game } from './Game'
 export const Room = () => {
   return (
     <Routes>
-      <Route path='/' element={<Entry />} />
-      <Route path='/game' element={<Game />} />
+      <Route path='/:room_id/player/:name' element={<Entry />} />
+      <Route path='/:room_id/player/:name/game' element={<Game />} />
     </Routes>
   )
 }
