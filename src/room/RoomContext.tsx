@@ -15,9 +15,13 @@ export interface Player {
   name: string
   total_score: number
   game_score: number
+  finishedLevel: number
 }
 
-export type RoomState = 'lobby' | 'game'
+export interface RoomState {
+  id: number
+  screen: 'lobby' | 'game'
+}
 
 interface RoomContextType {
   websocket: Websocket
@@ -33,7 +37,7 @@ interface RoomContextType {
 
 export const RoomContext = createContext<RoomContextType>({
   websocket: { sendMessage: () => {}, lastMessage: null, readyState: ReadyState.UNINSTANTIATED },
-  roomState: 'lobby',
+  roomState: { id: -1, screen: 'lobby' },
   setRoomState: () => {},
   roomId: null,
   setRoomId: () => {},
@@ -44,7 +48,7 @@ export const RoomContext = createContext<RoomContextType>({
 })
 
 export const RoomContextProvider = ({ children }: { children: JSX.Element[] | JSX.Element }) => {
-  const [roomState, setRoomState] = useState<RoomState>('lobby')
+  const [roomState, setRoomState] = useState<RoomState>({ id: -1, screen: 'lobby' })
   const [roomId, setRoomId] = useState<number | null>(null)
   const [players, setPlayers] = useState<Player[]>([])
   const [yourName, setYourName] = useState<string | null>(null)
