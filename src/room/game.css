@@ -1,0 +1,22 @@
+#timer {
+    background: #FDEDED;
+    border-width: 0px 1px 3px 1px;
+    border-style: solid;
+    border-color: #371757;
+    box-shadow: 0px 2px 8px -3px #BA6BFF;
+    border-radius: 0px 0px 150px 150px;
+    width: 412px;
+    height: 76px;
+    position: absolute;
+    flex-direction: column;
+    font-family: 'VT323';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 48px;
+    line-height: 48px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #371757;
+    text-shadow: 0px 4px 4px rgba(186, 107, 255, 0.54);
+}

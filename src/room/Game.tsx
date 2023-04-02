@@ -34,7 +34,7 @@ export function Game({
   useEffect(() => {
     console.log(roomState.screen)
     if (roomState.screen == 'lobby') {
-      navigate(-1)
+      //   navigate(-1)
     }
   }, [navigate, roomState])
 
@@ -60,7 +60,7 @@ export function Game({
         setRoomState({ ...roomState, screen: 'lobby' })
       }
     }
-  }, [lastMessage, setPlayers])
+  }, [lastMessage, roomState, setPlayers, setRoomState])
 
   useEffect(() => {
     if (Object.keys(matches).length == images.length) {
@@ -78,7 +78,7 @@ export function Game({
         choices: matches,
       })}`,
     )
-  }, [levelNumber, matches, sendMessage])
+  }, [images.length, levelNumber, matches, sendMessage])
 
   const chooseImage = useCallback(
     (image: string) => {
