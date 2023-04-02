@@ -1,13 +1,21 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
+import type { SendMessage } from 'react-use-websocket'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
 
 import { BACKEND_URL } from '../config'
-import { RoomContext } from './RoomContext'
+import type { Websocket } from './Room'
 
-export function Game() {
-  const { websocketUrl } = useContext(RoomContext)
-  const { sendMessage, lastMessage, readyState } = useWebSocket(websocketUrl)
-
+export function Game({
+  sendMessage,
+  lastMessage,
+  readyState,
+}: {
+  sendMessage: SendMessage
+  // eslint-disable-next-line
+  lastMessage: MessageEvent<any> | null
+  readyState: ReadyState
+}) {
   const [isGameLoaded, setIsGameLoaded] = useState<boolean>(false)
   const [levelNumber, setLevelNumber] = useState<number>(-1)
   const [images, setImages] = useState<string[]>([])
@@ -22,7 +30,6 @@ export function Game() {
   useEffect(() => {
     if (lastMessage !== null && typeof lastMessage.data == 'string') {
       const json = JSON.parse(lastMessage.data)
-      console.log(json)
       if (json.type == 'level') {
         // set new level data
         setIsGameLoaded(true)
@@ -39,7 +46,6 @@ export function Game() {
 
   useEffect(() => {
     if (Object.keys(matches).length == 4) {
-      console.log('succes!')
       const message = JSON.stringify({
         type: 'choice',
         choices: matches,

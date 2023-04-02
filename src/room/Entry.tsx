@@ -1,17 +1,24 @@
 import React, { useCallback, useContext, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import type { SendMessage } from 'react-use-websocket'
 import useWebSocket, { ReadyState } from 'react-use-websocket'
 
 import { BACKEND_URL } from '../config'
 import { PlayerTable } from './PlayerTable'
+import type { Websocket } from './Room'
 import { RoomContext } from './RoomContext'
 
-export function Entry() {
+export function Entry({
+  sendMessage,
+  lastMessage,
+  readyState,
+}: {
+  sendMessage: SendMessage
+  // eslint-disable-next-line
+  lastMessage: MessageEvent<any> | null
+  readyState: ReadyState
+}) {
   const { roomState, setRoomState, setPlayers } = useContext(RoomContext)
-  const params = useParams()
-  const { sendMessage, lastMessage, readyState } = useWebSocket(
-    `ws://${BACKEND_URL}/ws/room/${params.room_id}/player/${params.name}`,
-  )
 
   const navigate = useNavigate()
 

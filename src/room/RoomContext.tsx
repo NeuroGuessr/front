@@ -1,6 +1,4 @@
 import { createContext, useState } from 'react'
-import type { SendMessage } from 'react-use-websocket'
-import { ReadyState } from 'react-use-websocket'
 
 export interface Player {
   name: string
@@ -15,8 +13,6 @@ export interface RoomState {
 }
 
 interface RoomContextType {
-  websocketUrl: string | null
-  setWebsocketUrl: (websocketUrl: string) => void
   roomState: RoomState
   setRoomState: (newRoomState: RoomState) => void
   roomId: number | null
@@ -28,8 +24,6 @@ interface RoomContextType {
 }
 
 export const RoomContext = createContext<RoomContextType>({
-  websocketUrl: null,
-  setWebsocketUrl: () => {},
   roomState: { id: -1, screen: 'lobby' },
   setRoomState: () => {},
   roomId: null,
@@ -45,13 +39,10 @@ export const RoomContextProvider = ({ children }: { children: JSX.Element[] | JS
   const [roomId, setRoomId] = useState<number | null>(null)
   const [players, setPlayers] = useState<Player[]>([])
   const [yourName, setYourName] = useState<string | null>(null)
-  const [websocketUrl, setWebsocketUrl] = useState<string | null>(null)
 
   return (
     <RoomContext.Provider
       value={{
-        websocketUrl,
-        setWebsocketUrl,
         roomState,
         setRoomState,
         roomId,

@@ -15,8 +15,6 @@ export const PlayerTable = () => {
     )
   }
 
-  console.log(players)
-
   if (players.length == 0) {
     return <div>No players currently!</div>
   }
