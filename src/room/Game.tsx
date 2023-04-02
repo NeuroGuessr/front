@@ -111,7 +111,7 @@ export function Game({
                   border: '3px solid',
                   borderColor: imageChosen === imageUrl ? 'red' : 'white',
                   margin: 5,
-                  opacity: Object.keys(matches).includes(idx.toString()) ? 0.3 : 1,
+                  opacity: Object.keys(matches).includes(imageUrl) ? 0.3 : 1,
                 }}
               >
                 <img src={`http://${BACKEND_URL}/static/${imageUrl}`} width={200} height={200} />
@@ -129,7 +129,7 @@ export function Game({
                   margin: 2,
                   border: '2px solid',
                   borderColor: labelChosen === label ? 'red' : '#ddd',
-                  color: Object.values(matches).includes(idx) ? '#aaa' : 'black',
+                  color: Object.values(matches).includes(label) ? '#aaa' : 'black',
                 }}
               >
                 {label}
