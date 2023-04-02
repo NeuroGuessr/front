@@ -33,7 +33,7 @@ export function Entry() {
     const message = JSON.stringify({ type: 'start_game' })
     sendMessage(message)
     setRoomState({ ...roomState, screen: 'game' })
-  }, [])
+  }, [roomState, sendMessage, setRoomState])
 
   const connectionStatus = {
     [ReadyState.CONNECTING]: 'Connecting',

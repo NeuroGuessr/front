@@ -16,24 +16,28 @@ export function Home() {
   const [error, setError] = useState<string>('')
 
   useEffect(() => {
-    if (readyState == ReadyState.OPEN) {
-      const message = JSON.stringify({ type: 'create_player', name: nickname })
-      sendMessage(message)
-      setYourName(nickname)
-    }
     if (readyState == ReadyState.OPEN && lastMessage !== null) {
       const json = JSON.parse(lastMessage.data)
       console.log(json)
       if (json.type == 'error') {
         setError(json.message)
       } else if (json.type == 'room') {
+        setYourName(nickname)
         navigate(`room/${json.room_id}`)
       }
     }
   }, [lastMessage, navigate, nickname, readyState, sendMessage, setYourName, websocketUrl])
 
   const createRoom = useCallback(() => {
-    setWebsocketUrl(`ws://${BACKEND_URL}/ws/room/new/player/${nickname}`)
+    fetch('/room', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({}),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setWebsocketUrl(`ws://${BACKEND_URL}/ws/room/${data.room_id}/player/${nickname}`)
+      })
   }, [nickname, setWebsocketUrl])
 
   const joinRoom = useCallback(() => {
