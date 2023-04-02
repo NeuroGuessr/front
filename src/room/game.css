@@ -78,4 +78,5 @@ body {
     background: #7F45B1;
     backdrop-filter: blur(2.5px);
     border-radius: 21px;
+    font-size: 20px;
 }
