@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { BACKEND_URL } from './config'
-import { RoomContext } from './room/RoomContext'
+import { RoomContext } from './RoomContext'
 
 export function Home() {
   const { setYourName } = useContext(RoomContext)

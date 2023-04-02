@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import { Home } from './Home'
 import { Room } from './room/Room'
-import { RoomContextProvider } from './room/RoomContext'
+import { RoomContextProvider } from './RoomContext'
 
 export function App() {
   return (

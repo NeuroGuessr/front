@@ -3,8 +3,8 @@ import type { SendMessage } from 'react-use-websocket'
 import { ReadyState } from 'react-use-websocket'
 
 import { BACKEND_URL } from '../config'
+import { RoomContext } from '../RoomContext'
 import { PlayerTable } from './PlayerTable'
-import { RoomContext } from './RoomContext'
 
 export function Game({
   sendMessage,
@@ -44,9 +44,10 @@ export function Game({
       }
       if (json.type == 'room') {
         setPlayers(json.players)
+        console.log(json.players)
       }
     }
-  }, [lastMessage])
+  }, [lastMessage, setPlayers])
 
   useEffect(() => {
     if (Object.keys(matches).length == 4) {

@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import type { SendMessage } from 'react-use-websocket'
 import { ReadyState } from 'react-use-websocket'
 
+import { RoomContext } from '../RoomContext'
 import { PlayerTable } from './PlayerTable'
-import { RoomContext } from './RoomContext'
 
 export function Entry({
   sendMessage,
