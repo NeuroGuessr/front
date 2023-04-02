@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { ReadyState } from 'react-use-websocket'
 
 import { BACKEND_URL } from '../config'
@@ -7,7 +6,6 @@ import type { websocketProps } from './Room'
 
 export function Game(props: websocketProps) {
   const { sendMessage, lastMessage, readyState } = props
-  const navigate = useNavigate()
 
   const [isGameLoaded, setIsGameLoaded] = useState<boolean>(false)
   const [images, setImages] = useState<string[]>([])
@@ -23,12 +21,14 @@ export function Game(props: websocketProps) {
     if (lastMessage !== null && typeof lastMessage.data == 'string') {
       const json = JSON.parse(lastMessage.data)
       if (json.type == 'level') {
+        // set new level data
         setIsGameLoaded(true)
         setImages(json.images)
         setLabels(json.labels)
-      } else if (json.type == 'results') {
-        console.log(json)
-        navigate('../results')
+        // clear state
+        setImageChosen(null)
+        setLabelChosen(null)
+        setMatches([])
       }
     }
   }, [lastMessage])
@@ -84,17 +84,37 @@ export function Game(props: websocketProps) {
     return <div>Loading game!</div>
   } else {
     return (
-      <div>
-        <div>
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div style={{ display: 'flex' }}>
           {images.map((imageUrl, idx) => (
-            <div key={idx} onClick={() => chooseImage(idx)}>
+            <div
+              key={idx}
+              onClick={() => chooseImage(idx)}
+              style={{
+                border: '3px solid',
+                borderColor: imageChosen === idx ? 'red' : 'white',
+                margin: 5,
+                opacity: Object.keys(matches).includes(idx.toString()) ? 0.3 : 1,
+              }}
+            >
               <img src={`http://${BACKEND_URL}/static/${imageUrl}`} width={200} height={200} />
             </div>
           ))}
         </div>
-        <div>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
           {labels.map((label, idx) => (
-            <div key={idx} onClick={() => chooseLabel(idx)} style={{ padding: 5, backgroundColor: '#ddd' }}>
+            <div
+              key={idx}
+              onClick={() => chooseLabel(idx)}
+              style={{
+                padding: 5,
+                backgroundColor: '#ddd',
+                margin: 2,
+                border: '2px solid',
+                borderColor: labelChosen === idx ? 'red' : '#ddd',
+                color: Object.values(matches).includes(idx) ? '#aaa' : 'black',
+              }}
+            >
               {label}
             </div>
           ))}

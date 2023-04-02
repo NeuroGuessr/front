@@ -6,7 +6,6 @@ import useWebSocket from 'react-use-websocket'
 import { BACKEND_URL } from '../config'
 import { Entry } from './Entry'
 import { Game } from './Game'
-import { Results } from './Results'
 
 export interface websocketProps {
   sendMessage: SendMessage
@@ -28,10 +27,6 @@ export const Room = () => {
         <Route
           path='/game'
           element={<Game sendMessage={sendMessage} lastMessage={lastMessage} readyState={readyState} />}
-        />
-        <Route
-          path='/results'
-          element={<Results sendMessage={sendMessage} lastMessage={lastMessage} readyState={readyState} />}
         />
       </Routes>
     </>
