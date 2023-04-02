@@ -1,6 +1,7 @@
 body
 {
 
+    font-family: 'VT323';
     display: flex;
     flex-direction: row;
     padding: 0px;
@@ -29,8 +30,6 @@ body
 display: flex;
 flex-direction: column;
 align-items: flex-end;
-padding: 10px;
-gap: 10px;
 
 width: 376px;
 height: auto;
@@ -41,11 +40,6 @@ height: auto;
 background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), rgba(104, 30, 168, 0.63);
 /* borders and strokes */
 
-border: 1px solid #371757;
-
-/* Inside auto layout */
-
-flex: none;
 align-self: stretch;
 flex-grow: 0;
 }
@@ -89,7 +83,7 @@ flex-grow: 0;
     color: #FFF3F3;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
-.clicable:hover {
+.label:hover {
     opacity:0.9;
     transform:scale(1.05);
 }
@@ -150,3 +144,23 @@ flex-grow: 0;
     
     text-shadow: 0px 4px 4px rgba(186, 107, 255, 0.54);
 }
+.score-record{width: 356px;
+    display:flex;
+    flex-direction: row;
+    height: 62px;
+    background: #FDEDED;
+    /* borders and strokes */
+    border-width: 0px 1px 3px 1px;
+    border-style: solid;
+    border-color: #371757;
+    box-shadow: 0px 2px 8px -3px #BA6BFF;
+    border-radius: 10px 0px 0px 10px;
+    align-items: center;
+    justify-content: space-around;
+    font-size: 25px; 
+    }
+.name-text
+{
+
+}
+.leader-board:nth-child(2).icon{ color:rgba(255, 63, 15, 100)}
