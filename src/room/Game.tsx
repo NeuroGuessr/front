@@ -26,6 +26,7 @@ export function Game({
   const [levelNumber, setLevelNumber] = useState<number>(-1)
   const [images, setImages] = useState<string[]>([])
   const [labels, setLabels] = useState<string[]>([])
+  const [time, setTime] = useState<number>(0)
 
   // game logic
   const [imageChosen, setImageChosen] = useState<string | null>(null)
@@ -49,6 +50,12 @@ export function Game({
         setImages(json.images)
         setLabels(json.labels)
         setLevelNumber(json.level_number)
+        setTime(json.time)
+
+        setInterval(() => {
+          setTime((time) => time - 1)
+        }, 1000)
+
         // clear state
         setImageChosen(null)
         setLabelChosen(null)
@@ -116,7 +123,7 @@ export function Game({
   } else {
     return (
       <div id='main'>
-        <div id='timer'>some time</div>
+        <div id='timer'>{time}s</div>
         <div id='content'>
           <div id='imagesGrid'>
             {images.map((imageUrl, idx) => (
