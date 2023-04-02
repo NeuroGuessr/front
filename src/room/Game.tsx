@@ -34,9 +34,8 @@ export function Game({
 
   // navigate
   useEffect(() => {
-    console.log(roomState.screen)
     if (roomState.screen == 'lobby') {
-      //   navigate(-1)
+      navigate(-1)
     }
   }, [navigate, roomState])
 
@@ -131,7 +130,7 @@ export function Game({
                   opacity: Object.keys(matches).includes(imageUrl) ? 0.3 : 1,
                 }}
               >
-                <img src={`http://${BACKEND_URL}/static/${imageUrl}`} width={200} height={200} />
+                <img src={`http://${AI_URL}/static/${imageUrl}`} width={200} height={200} />
               </div>
             ))}
           </div>
@@ -145,7 +144,7 @@ export function Game({
                   border: '2px solid',
                   borderColor: labelChosen === label ? 'red' : '#ddd',
                   backgroundColor: Object.values(matches).includes(label) ? '#aaa' : '#7F45B1',
-                  color: Object.values(matches).includes(label) ? '#ccc' : '#000',
+                  color: Object.values(matches).includes(label) ? '#ccc' : '#fff',
                 }}
               >
                 {label}
