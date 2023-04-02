@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import type { SendMessage } from 'react-use-websocket'
-import useWebSocket, { ReadyState } from 'react-use-websocket'
+import { ReadyState } from 'react-use-websocket'
 
 import { BACKEND_URL } from '../config'
-import type { Websocket } from './Room'
+import { PlayerTable } from './PlayerTable'
+import { RoomContext } from './RoomContext'
 
 export function Game({
   sendMessage,
@@ -16,6 +16,7 @@ export function Game({
   lastMessage: MessageEvent<any> | null
   readyState: ReadyState
 }) {
+  const { setPlayers } = useContext(RoomContext)
   const [isGameLoaded, setIsGameLoaded] = useState<boolean>(false)
   const [levelNumber, setLevelNumber] = useState<number>(-1)
   const [images, setImages] = useState<string[]>([])
@@ -41,6 +42,9 @@ export function Game({
         setLabelChosen(null)
         setMatches([])
       }
+      if (json.type == 'room') {
+        setPlayers(json.players)
+      }
     }
   }, [lastMessage])
 
@@ -60,7 +64,7 @@ export function Game({
         choices: matches,
       })}`,
     )
-  }, [matches])
+  }, [levelNumber, matches, sendMessage])
 
   const chooseImage = useCallback(
     (imageIdx: number) => {
@@ -96,41 +100,44 @@ export function Game({
     return <div>Loading game!</div>
   } else {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <div style={{ display: 'flex' }}>
-          {images.map((imageUrl, idx) => (
-            <div
-              key={idx}
-              onClick={() => chooseImage(idx)}
-              style={{
-                border: '3px solid',
-                borderColor: imageChosen === idx ? 'red' : 'white',
-                margin: 5,
-                opacity: Object.keys(matches).includes(idx.toString()) ? 0.3 : 1,
-              }}
-            >
-              <img src={`http://${BACKEND_URL}/static/${imageUrl}`} width={200} height={200} />
-            </div>
-          ))}
-        </div>
+      <div>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          {labels.map((label, idx) => (
-            <div
-              key={idx}
-              onClick={() => chooseLabel(idx)}
-              style={{
-                padding: 5,
-                backgroundColor: '#ddd',
-                margin: 2,
-                border: '2px solid',
-                borderColor: labelChosen === idx ? 'red' : '#ddd',
-                color: Object.values(matches).includes(idx) ? '#aaa' : 'black',
-              }}
-            >
-              {label}
-            </div>
-          ))}
+          <div style={{ display: 'flex' }}>
+            {images.map((imageUrl, idx) => (
+              <div
+                key={idx}
+                onClick={() => chooseImage(idx)}
+                style={{
+                  border: '3px solid',
+                  borderColor: imageChosen === idx ? 'red' : 'white',
+                  margin: 5,
+                  opacity: Object.keys(matches).includes(idx.toString()) ? 0.3 : 1,
+                }}
+              >
+                <img src={`http://${BACKEND_URL}/static/${imageUrl}`} width={200} height={200} />
+              </div>
+            ))}
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            {labels.map((label, idx) => (
+              <div
+                key={idx}
+                onClick={() => chooseLabel(idx)}
+                style={{
+                  padding: 5,
+                  backgroundColor: '#ddd',
+                  margin: 2,
+                  border: '2px solid',
+                  borderColor: labelChosen === idx ? 'red' : '#ddd',
+                  color: Object.values(matches).includes(idx) ? '#aaa' : 'black',
+                }}
+              >
+                {label}
+              </div>
+            ))}
+          </div>
         </div>
+        <PlayerTable />
       </div>
     )
   }

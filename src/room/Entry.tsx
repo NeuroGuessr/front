@@ -1,11 +1,9 @@
 import React, { useCallback, useContext, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import type { SendMessage } from 'react-use-websocket'
-import useWebSocket, { ReadyState } from 'react-use-websocket'
+import { ReadyState } from 'react-use-websocket'
 
-import { BACKEND_URL } from '../config'
 import { PlayerTable } from './PlayerTable'
-import type { Websocket } from './Room'
 import { RoomContext } from './RoomContext'
 
 export function Entry({
@@ -24,6 +22,7 @@ export function Entry({
 
   // navigate
   useEffect(() => {
+    console.log(roomState.screen)
     if (roomState.screen == 'game') {
       navigate('game')
     }
@@ -36,6 +35,9 @@ export function Entry({
       console.log(json)
       if (json.type == 'room') {
         setPlayers(json.players)
+      }
+      if (json.type == 'level') {
+        setRoomState({ ...roomState, screen: 'game' })
       }
     }
   }, [lastMessage, setPlayers])
