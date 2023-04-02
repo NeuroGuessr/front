@@ -66,9 +66,6 @@ export function Entry() {
           <input type='text' onChange={onChangeName}></input>
           <button onClick={sendCreateUser}>Join!</button>
         </div>
-        <div>
-          <b>All users</b>
-        </div>
         <button onClick={onStartGame}>Start game!</button>
       </div>
       <PlayerTable />

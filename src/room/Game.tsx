@@ -9,6 +9,7 @@ export function Game() {
   const { sendMessage, lastMessage, readyState } = websocket
 
   const [isGameLoaded, setIsGameLoaded] = useState<boolean>(false)
+  const [levelNumber, setLevelNumber] = useState<number>(-1)
   const [images, setImages] = useState<string[]>([])
   const [labels, setLabels] = useState<string[]>([])
 
@@ -26,6 +27,7 @@ export function Game() {
         setIsGameLoaded(true)
         setImages(json.images)
         setLabels(json.labels)
+        setLevelNumber(json.level_number)
         // clear state
         setImageChosen(null)
         setLabelChosen(null)
@@ -40,6 +42,8 @@ export function Game() {
       const message = JSON.stringify({
         type: 'choice',
         choices: matches,
+        // eslint-disable-next-line camelcase
+        level_number: levelNumber,
       })
       sendMessage(message)
     }
