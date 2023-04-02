@@ -76,9 +76,10 @@ flex-grow: 0;
     font-weight: 400;
     font-size: 22px;display: flex;
     align-items: center;
+    align-content:center;
     text-align: center;
     width: 249px;
-    height: 92px;
+    height: 100%;
     font-family: 'VT323';
     font-style: normal;
     font-weight: 400;
@@ -88,6 +89,17 @@ flex-grow: 0;
     color: #FFF3F3;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
+.clicable:hover {
+    opacity:0.9;
+    transform:scale(1.05);
+}
+
+.image:hover
+{
+    opacity:0.9;
+    transform:scale(1.05);
+}
+
 .label{
     
     margin:10px;
@@ -102,13 +114,9 @@ flex-grow: 0;
     height: 127px;
     left: 1067px;
     top: 213px;
-    
-    /* label-cont */
-    
+    border-image:linear-gradient(red, blue) 27 / 35px;
     background: #7F45B1;
-    backdrop-filter: blur(2.5px);
     /* Note: backdrop-filter has minimal browser support */
-    
     border-radius: 21px;}
 
 .image{width: 200px;
