@@ -1,4 +1,3 @@
-// App.js
 import { useContext } from 'react'
 
 import type { Player } from '../RoomContext'

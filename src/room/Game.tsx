@@ -23,8 +23,8 @@ export function Game({
   const [labels, setLabels] = useState<string[]>([])
 
   // game logic
-  const [imageChosen, setImageChosen] = useState<number | null>(null)
-  const [labelChosen, setLabelChosen] = useState<number | null>(null)
+  const [imageChosen, setImageChosen] = useState<string | null>(null)
+  const [labelChosen, setLabelChosen] = useState<string | null>(null)
   const [matches, setMatches] = useState({})
 
   // receiving messages
@@ -44,7 +44,6 @@ export function Game({
       }
       if (json.type == 'room') {
         setPlayers(json.players)
-        console.log(json.players)
       }
     }
   }, [lastMessage, setPlayers])
@@ -68,30 +67,30 @@ export function Game({
   }, [levelNumber, matches, sendMessage])
 
   const chooseImage = useCallback(
-    (imageIdx: number) => {
+    (image: string) => {
       if (labelChosen !== null) {
         setImageChosen(null)
         setLabelChosen(null)
         setMatches((prevMatches) => {
-          return { ...prevMatches, [imageIdx]: labelChosen }
+          return { ...prevMatches, [image]: labelChosen }
         })
       } else {
-        setImageChosen(imageIdx)
+        setImageChosen(image)
       }
     },
     [labelChosen],
   )
 
   const chooseLabel = useCallback(
-    (labelIdx: number) => {
+    (label: string) => {
       if (imageChosen !== null) {
         setImageChosen(null)
         setLabelChosen(null)
         setMatches((prevMatches) => {
-          return { ...prevMatches, [imageChosen]: labelIdx }
+          return { ...prevMatches, [imageChosen]: label }
         })
       } else {
-        setLabelChosen(labelIdx)
+        setLabelChosen(label)
       }
     },
     [imageChosen],
@@ -107,10 +106,10 @@ export function Game({
             {images.map((imageUrl, idx) => (
               <div
                 key={idx}
-                onClick={() => chooseImage(idx)}
+                onClick={() => chooseImage(imageUrl)}
                 style={{
                   border: '3px solid',
-                  borderColor: imageChosen === idx ? 'red' : 'white',
+                  borderColor: imageChosen === imageUrl ? 'red' : 'white',
                   margin: 5,
                   opacity: Object.keys(matches).includes(idx.toString()) ? 0.3 : 1,
                 }}
@@ -123,13 +122,13 @@ export function Game({
             {labels.map((label, idx) => (
               <div
                 key={idx}
-                onClick={() => chooseLabel(idx)}
+                onClick={() => chooseLabel(label)}
                 style={{
                   padding: 5,
                   backgroundColor: '#ddd',
                   margin: 2,
                   border: '2px solid',
-                  borderColor: labelChosen === idx ? 'red' : '#ddd',
+                  borderColor: labelChosen === label ? 'red' : '#ddd',
                   color: Object.values(matches).includes(idx) ? '#aaa' : 'black',
                 }}
               >
