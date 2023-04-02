@@ -40,7 +40,7 @@ export function Entry({
         setRoomState({ ...roomState, screen: 'game' })
       }
     }
-  }, [lastMessage, setPlayers])
+  }, [lastMessage, roomState, setPlayers, setRoomState])
 
   const onStartGame = useCallback(() => {
     const message = JSON.stringify({ type: 'start_game' })

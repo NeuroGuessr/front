@@ -100,7 +100,7 @@ export function Game({
     return <div>Loading game!</div>
   } else {
     return (
-      <div>
+      <div style={{ display: 'flex' }}>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex' }}>
             {images.map((imageUrl, idx) => (
